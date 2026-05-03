@@ -80,6 +80,73 @@
 
   .nav-links a:hover { color: var(--gold-light); }
 
+  /* Submenu */
+  .has-submenu { position: relative; }
+
+  .has-submenu > a .caret {
+    font-size: 0.7em;
+    margin-left: 0.3em;
+    opacity: 0.7;
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+
+  .has-submenu:hover > a .caret { transform: rotate(180deg); }
+
+  .submenu {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 0;
+    background: rgba(61, 26, 110, 0.98);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(201, 168, 76, 0.25);
+    list-style: none;
+    padding: 0.6rem 0;
+    min-width: 180px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+  }
+
+  /* Invisible bridge so the menu doesn't disappear when moving from link to dropdown */
+  .has-submenu::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    height: 1rem;
+    pointer-events: none;
+  }
+  .has-submenu:hover::after { pointer-events: auto; }
+
+  .has-submenu:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .submenu li { display: block; }
+
+  .submenu a {
+    display: block;
+    padding: 0.6rem 1.2rem;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(237, 232, 245, 0.85);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.2s, background 0.2s;
+  }
+
+  .submenu a:hover {
+    color: var(--gold);
+    background: rgba(201, 168, 76, 0.08);
+  }
+
   /* HERO */
   .hero {
     min-height: 100vh;
@@ -265,6 +332,27 @@
     display: flex;
     flex-direction: column;
   }
+
+  .read-more {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 1rem;
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 2px;
+    align-self: flex-start;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .read-more:hover {
+    color: var(--purple);
+    border-bottom-color: var(--purple);
+  }
+
+  .candidate-img-wrap { cursor: zoom-in; }
 
   .candidate-img-wrap {
     position: relative;
@@ -668,7 +756,6 @@
     line-height: 1;
   }
   .gallery-item { cursor: zoom-in; }
-  .candidate-img-wrap { cursor: zoom-in; }
 
   /* Hamburger button */
   .nav-toggle {
@@ -722,6 +809,26 @@
       font-size: 0.8rem;
     }
 
+    /* Mobile submenu — show inline, always expanded */
+    .has-submenu .caret { display: none; }
+    .submenu {
+      position: static;
+      transform: none;
+      background: rgba(0,0,0,0.15);
+      border: none;
+      padding: 0;
+      min-width: 0;
+      opacity: 1;
+      visibility: visible;
+      margin: 0;
+    }
+    .submenu li { border-top: 1px solid rgba(201,168,76,0.06); }
+    .submenu a {
+      padding: 0.7rem 0 0.7rem 1.5rem;
+      font-size: 0.7rem;
+      color: rgba(237, 232, 245, 0.7);
+    }
+
     /* Sections */
     section { padding: 4rem 1.5rem; }
 
@@ -771,7 +878,13 @@
     <span></span><span></span><span></span>
   </button>
   <ul class="nav-links" id="navLinks">
-    <li><a href="#about" onclick="closeNav()">Candidates</a></li>
+    <li class="has-submenu">
+      <a href="#about" onclick="closeNav()">Candidates <span class="caret">▾</span></a>
+      <ul class="submenu">
+        <li><a href="zach.html">Zach Dvorkin</a></li>
+        <li><a href="rafi.html">Rafael Brewer</a></li>
+      </ul>
+    </li>
     <li><a href="#platform" onclick="closeNav()">Platform</a></li>
     <li><a href="#gallery" onclick="closeNav()">Gallery</a></li>
     <li><a href="#contact" onclick="closeNav()">Contact</a></li>
@@ -820,7 +933,8 @@
         </div>
         <h3 class="candidate-name">Zach Dvorkin</h3>
         <p class="candidate-role">Candidate for ASB President</p>
-        <p class="candidate-bio">Bio coming soon.</p>
+        <p class="candidate-bio">You can't just paint over rotten wood — you have to replace it. Sophomore, Leadership Class member, and former middle school president running to redesign ASB from the ground up.</p>
+        <a href="zach.html" class="read-more">Read more →</a>
       </div>
       <div class="candidate-card">
         <div class="candidate-img-wrap" onclick="openLightbox('images/Rafi-Temp.jpg', 'Rafael Brewer')">
@@ -829,7 +943,8 @@
         </div>
         <h3 class="candidate-name">Rafael Brewer</h3>
         <p class="candidate-role">Candidate for ASB Vice President</p>
-        <p class="candidate-bio">Bio coming soon.</p>
+        <p class="candidate-bio">He's already doing the work — without the title. Junior, Messenger journalist, and BLT member running to bring real accountability and access to ASB.</p>
+        <a href="rafi.html" class="read-more">Read more →</a>
       </div>
     </div>
   </div>

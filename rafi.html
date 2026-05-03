@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rafael Brewer — Dvorkin & Brewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PFL21SKS4G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PFL21SKS4G');
+</script>
+<style>
+  :root {
+    --purple: #3d1a6e;
+    --purple-mid: #5a2d99;
+    --purple-light: #7b4bbf;
+    --purple-pale: #ede8f5;
+    --gold: #c9a84c;
+    --gold-light: #e8d5a3;
+    --white: #fdfcff;
+    --off-white: #f5f2f9;
+    --text: #1a0a2e;
+    --text-muted: #5a4d6e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: var(--white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 4rem;
+    background: rgba(61, 26, 110, 0.97);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(201, 168, 76, 0.3);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    z-index: 101;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(237, 232, 245, 0.85);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+
+  /* Submenu */
+  .has-submenu { position: relative; }
+  .has-submenu > a .caret {
+    font-size: 0.7em;
+    margin-left: 0.3em;
+    opacity: 0.7;
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+  .has-submenu:hover > a .caret { transform: rotate(180deg); }
+  .submenu {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 0;
+    background: rgba(61, 26, 110, 0.98);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(201, 168, 76, 0.25);
+    list-style: none;
+    padding: 0.6rem 0;
+    min-width: 180px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+  }
+  .has-submenu::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    height: 1rem;
+    pointer-events: none;
+  }
+  .has-submenu:hover::after { pointer-events: auto; }
+  .has-submenu:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .submenu li { display: block; }
+  .submenu a {
+    display: block;
+    padding: 0.6rem 1.2rem;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(237, 232, 245, 0.85);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.2s, background 0.2s;
+  }
+  .submenu a:hover {
+    color: var(--gold);
+    background: rgba(201, 168, 76, 0.08);
+  }
+
+  .nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    z-index: 101;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+  .nav-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--gold-light);
+    transition: all 0.3s ease;
+    transform-origin: center;
+  }
+  .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2) { opacity: 0; }
+  .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* HEADER */
+  .candidate-hero {
+    background: var(--purple);
+    color: var(--white);
+    padding: 9rem 4rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .candidate-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(90, 45, 153, 0.6) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(201, 168, 76, 0.1) 0%, transparent 50%);
+  }
+  .candidate-hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .candidate-photo {
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    position: relative;
+  }
+  .candidate-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+  .candidate-info .role-label {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+  .candidate-info h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    margin-bottom: 1rem;
+    color: var(--white);
+  }
+  .candidate-info .position {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--gold-light);
+    margin-bottom: 2rem;
+  }
+  .candidate-divider {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin-bottom: 2rem;
+  }
+  .candidate-tagline {
+    font-size: 1.2rem;
+    color: rgba(237, 232, 245, 0.85);
+    line-height: 1.7;
+  }
+
+  /* BIO */
+  .bio {
+    background: var(--white);
+    padding: 6rem 4rem;
+  }
+  .bio-inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .bio-label {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--purple-light);
+    margin-bottom: 0.75rem;
+  }
+  .bio-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 2.6rem);
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 1rem;
+  }
+  .bio-rule {
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin-bottom: 2.5rem;
+  }
+  .bio p {
+    font-size: 1.15rem;
+    line-height: 1.85;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+  .bio p:first-of-type::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--purple);
+    float: left;
+    line-height: 0.85;
+    padding-right: 0.6rem;
+    padding-top: 0.3rem;
+  }
+
+  /* QUICK FACTS */
+  .quick-facts {
+    background: var(--off-white);
+    padding: 5rem 4rem;
+    border-top: 1px solid var(--purple-pale);
+  }
+  .facts-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .facts-label {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--purple-light);
+    margin-bottom: 0.75rem;
+    text-align: center;
+  }
+  .facts-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--purple);
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .facts-rule {
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin: 0 auto 3rem;
+  }
+  .facts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  .fact {
+    background: var(--white);
+    padding: 1.8rem;
+    border: 1px solid var(--purple-pale);
+  }
+  .fact-label {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .fact-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    color: var(--purple);
+    line-height: 1.5;
+  }
+
+  /* CTA TO RUNNING MATE */
+  .partner {
+    background: var(--purple);
+    color: var(--white);
+    padding: 5rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .partner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(123, 75, 191, 0.3) 0%, transparent 70%);
+  }
+  .partner-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .partner-label {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+  .partner-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+  .partner-role {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--gold-light);
+    margin-bottom: 2rem;
+  }
+  .btn {
+    display: inline-block;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--purple);
+    background: var(--gold);
+    padding: 1rem 2.5rem;
+    text-decoration: none;
+    transition: all 0.25s;
+    border: 1px solid var(--gold);
+  }
+  .btn:hover {
+    background: transparent;
+    color: var(--gold);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--purple);
+    padding: 2.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(201,168,76,0.2);
+    margin: 0;
+    width: 100%;
+  }
+  .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--gold-light);
+    font-weight: 700;
+  }
+  .footer-slogan {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: rgba(237,232,245,0.5);
+    font-size: 0.95rem;
+  }
+  .footer-school {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(237,232,245,0.4);
+  }
+
+  @media (max-width: 768px) {
+    nav {
+      padding: 1rem 1.5rem;
+      flex-wrap: wrap;
+    }
+    .nav-toggle { display: flex; }
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      gap: 0;
+      width: 100%;
+      padding: 0.5rem 0 1rem;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links li { border-top: 1px solid rgba(201,168,76,0.1); }
+    .nav-links a {
+      display: block;
+      padding: 0.85rem 0;
+      font-size: 0.8rem;
+    }
+    .has-submenu .caret { display: none; }
+    .submenu {
+      position: static;
+      transform: none;
+      background: rgba(0,0,0,0.15);
+      border: none;
+      padding: 0;
+      min-width: 0;
+      opacity: 1;
+      visibility: visible;
+      margin: 0;
+    }
+    .submenu li { border-top: 1px solid rgba(201,168,76,0.06); }
+    .submenu a {
+      padding: 0.7rem 0 0.7rem 1.5rem;
+      font-size: 0.7rem;
+      color: rgba(237, 232, 245, 0.7);
+    }
+
+    .candidate-hero { padding: 7rem 1.5rem 3rem; }
+    .candidate-hero-inner {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .bio, .quick-facts, .partner { padding: 4rem 1.5rem; }
+    .facts-grid { grid-template-columns: 1fr; }
+    footer {
+      flex-direction: column;
+      gap: 0.75rem;
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Dvorkin &amp; Brewer</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
+    <li class="has-submenu">
+      <a href="index.html#about">Candidates <span class="caret">▾</span></a>
+      <ul class="submenu">
+        <li><a href="zach.html">Zach Dvorkin</a></li>
+        <li><a href="rafi.html" class="current">Rafael Brewer</a></li>
+      </ul>
+    </li>
+    <li><a href="index.html#platform">Platform</a></li>
+    <li><a href="index.html#gallery">Gallery</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="candidate-hero">
+  <div class="candidate-hero-inner">
+    <div class="candidate-photo">
+      <img src="images/Rafi-Temp.jpg" alt="Rafael Brewer">
+    </div>
+    <div class="candidate-info">
+      <p class="role-label">Candidate for ASB Vice President</p>
+      <h1>Rafael Brewer</h1>
+      <p class="position">Garfield High School · Class of 2027</p>
+      <div class="candidate-divider"></div>
+      <p class="candidate-tagline">"Garfield deserves a better, more open student government."</p>
+    </div>
+  </div>
+</section>
+
+<!-- BIO -->
+<section class="bio">
+  <div class="bio-inner">
+    <p class="bio-label">About Rafi</p>
+    <h2 class="bio-title">An Outsider's Perspective.</h2>
+    <div class="bio-rule"></div>
+    <p>Rafael Brewer is a junior at Garfield, a journalist on The Messenger, and a tech theater veteran. He is currently the only student on Garfield's Building Leadership Team, which helps draft the budget and approves small grants for clubs.</p>
+    <p>Since the start of the year, Rafi has been doing the work of student government without the title. He's the only student consistently present at Seattle School Board meetings, where he's built real working relationships with the Superintendent and senior district staff as a reporter. His instinct is to ask hard questions, and he's done exactly that with the people who run the district.</p>
+    <p>That's the perspective Rafi brings to ASB. He knows what it's like to wait on a student government that keeps its students in the dark. He's running to make sure that every student at Garfield — not just the ones inside ASB — finally has someone in the room who's ready to ask the hard questions on their behalf.</p>
+  </div>
+</section>
+
+
+
+<!-- RUNNING MATE -->
+<section class="partner">
+  <div class="partner-inner">
+    <p class="partner-label">Running Mate</p>
+    <h2 class="partner-name">Zach Dvorkin</h2>
+    <p class="partner-role">Candidate for ASB President</p>
+    <a href="zach.html" class="btn">Meet Zach</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">Dvorkin &amp; Brewer</div>
+  <div class="footer-slogan">"Suited for Garfield."</div>
+  <div class="footer-school">Garfield High School · Seattle, WA</div>
+</footer>
+
+<script>
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => {
+    toggle.classList.toggle('open');
+    links.classList.toggle('open');
+  });
+</script>
+
+</body>
+</html>
