@@ -500,6 +500,80 @@
     color: rgba(237, 232, 245, 0.65);
   }
 
+  /* PROPOSAL CALLOUT */
+  .proposal-callout {
+    background: var(--white);
+    padding: 6rem 4rem;
+    text-align: center;
+    border-top: 1px solid var(--purple-pale);
+    position: relative;
+    overflow: hidden;
+  }
+  .proposal-callout::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+  .proposal-callout-inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .proposal-callout-eyebrow {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--purple-light);
+    margin-bottom: 1rem;
+  }
+  .proposal-callout-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 700;
+    color: var(--purple);
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
+  .proposal-callout-title em {
+    color: var(--gold);
+    font-style: italic;
+  }
+  .proposal-callout-rule {
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin: 0 auto 2rem;
+  }
+  .proposal-callout-text {
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 2.5rem;
+  }
+  .proposal-callout-btn {
+    display: inline-block;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--purple);
+    padding: 1.05rem 2.6rem;
+    text-decoration: none;
+    transition: all 0.25s;
+    border: 1px solid var(--purple);
+  }
+  .proposal-callout-btn:hover {
+    background: var(--gold);
+    color: var(--purple);
+    border-color: var(--gold);
+  }
+
   /* GALLERY */
   .gallery {
     background: var(--off-white);
@@ -898,6 +972,7 @@
       </ul>
     </li>
     <li><a href="#platform" onclick="closeNav()">Platform</a></li>
+    <li><a href="proposal.html" onclick="closeNav()">The Proposal</a></li>
     <li><a href="#gallery" onclick="closeNav()">Gallery</a></li>
     <li><a href="#contact" onclick="closeNav()">Contact</a></li>
   </ul>
@@ -985,6 +1060,17 @@
         <p class="pillar-text">Respect for each other, respect for our school, respect for the spaces and traditions we share. Garfield deserves to be treated like it's ours — because it is.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- PROPOSAL CALLOUT -->
+<section class="proposal-callout">
+  <div class="proposal-callout-inner">
+    <p class="proposal-callout-eyebrow">Our Platform in Practice</p>
+    <h2 class="proposal-callout-title">Our platform isn't a slogan.<br>It's <em>a document</em>.</h2>
+    <div class="proposal-callout-rule"></div>
+    <p class="proposal-callout-text">Read the full rewrite of the Garfield ASB Constitution and Bylaws — six structural reforms that turn these values into law.</p>
+    <a href="proposal.html" class="proposal-callout-btn">Read The Proposal</a>
   </div>
 </section>
 

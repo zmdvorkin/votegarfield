@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Proposal — Dvorkin & Brewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PFL21SKS4G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PFL21SKS4G');
+</script>
+<style>
+  :root {
+    --purple: #3d1a6e;
+    --purple-mid: #5a2d99;
+    --purple-light: #7b4bbf;
+    --purple-pale: #ede8f5;
+    --gold: #c9a84c;
+    --gold-light: #e8d5a3;
+    --white: #fdfcff;
+    --off-white: #f5f2f9;
+    --text: #1a0a2e;
+    --text-muted: #5a4d6e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: var(--white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 4rem;
+    background: rgba(61, 26, 110, 0.97);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(201, 168, 76, 0.3);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    z-index: 101;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(237, 232, 245, 0.85);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+
+  /* Submenu */
+  .has-submenu { position: relative; }
+  .has-submenu > a .caret {
+    font-size: 0.7em;
+    margin-left: 0.3em;
+    opacity: 0.7;
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+  .has-submenu:hover > a .caret { transform: rotate(180deg); }
+  .submenu {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 0;
+    background: rgba(61, 26, 110, 0.98);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(201, 168, 76, 0.25);
+    list-style: none;
+    padding: 0.6rem 0;
+    min-width: 180px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+  }
+  .has-submenu::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    height: 1rem;
+    pointer-events: none;
+  }
+  .has-submenu:hover::after { pointer-events: auto; }
+  .has-submenu:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .submenu li { display: block; }
+  .submenu a {
+    display: block;
+    padding: 0.6rem 1.2rem;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(237, 232, 245, 0.85);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.2s, background 0.2s;
+  }
+  .submenu a:hover {
+    color: var(--gold);
+    background: rgba(201, 168, 76, 0.08);
+  }
+
+  .nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    z-index: 101;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+  .nav-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--gold-light);
+    transition: all 0.3s ease;
+    transform-origin: center;
+  }
+  .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2) { opacity: 0; }
+  .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* HERO */
+  .prop-hero {
+    background: var(--purple);
+    color: var(--white);
+    padding: 10rem 4rem 6rem;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .prop-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(123, 75, 191, 0.4) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 90%, rgba(201, 168, 76, 0.08) 0%, transparent 50%);
+  }
+  .prop-hero::after {
+    content: '';
+    position: absolute;
+    top: 7rem; left: 3rem; right: 3rem; bottom: 3rem;
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    pointer-events: none;
+  }
+  .prop-hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .prop-eyebrow {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+  .prop-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
+    color: var(--white);
+  }
+  .prop-divider {
+    width: 80px;
+    height: 1px;
+    background: var(--gold);
+    margin: 0 auto 1.5rem;
+  }
+  .prop-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+  }
+  .prop-subtitle {
+    font-size: 1.1rem;
+    color: rgba(237, 232, 245, 0.75);
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* WHY SECTION */
+  .why {
+    background: var(--white);
+    padding: 6rem 4rem;
+  }
+  .why-inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--purple-light);
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 2.6rem);
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 1rem;
+    line-height: 1.15;
+  }
+  .section-rule {
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin-bottom: 2.5rem;
+  }
+  .why p {
+    font-size: 1.15rem;
+    line-height: 1.85;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+  .why p:first-of-type::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--purple);
+    float: left;
+    line-height: 0.85;
+    padding-right: 0.6rem;
+    padding-top: 0.3rem;
+  }
+
+  /* CHANGES SECTION */
+  .changes {
+    background: var(--purple);
+    color: var(--white);
+    padding: 6rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .changes::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: -200px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+  }
+  .changes::after {
+    content: '';
+    position: absolute;
+    bottom: -200px; right: -200px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(123, 75, 191, 0.15) 0%, transparent 70%);
+  }
+  .changes-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .changes-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+  .changes-header .section-label { color: var(--gold); opacity: 0.85; }
+  .changes-header .section-title { color: var(--white); }
+  .changes-header .section-rule { margin: 0 auto; }
+
+  .changes-grid {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-left: 4rem;
+  }
+
+  /* The vertical gold line */
+  .changes-grid::before {
+    content: '';
+    position: absolute;
+    left: 1.4rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(201, 168, 76, 0.5) 8%,
+      rgba(201, 168, 76, 0.5) 92%,
+      transparent 100%
+    );
+  }
+
+  .change {
+    position: relative;
+    padding: 0 0 4rem 0;
+    background: transparent;
+    transition: none;
+  }
+
+  .change:last-child { padding-bottom: 0; }
+  .change:hover { background: transparent; }
+
+  /* Number sits on the line */
+  .change-num {
+    position: absolute;
+    left: -4rem;
+    top: -0.4rem;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    background: var(--purple);
+    border: 1px solid rgba(201, 168, 76, 0.5);
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    z-index: 2;
+    transition: all 0.3s ease;
+  }
+
+  .change:hover .change-num {
+    background: var(--gold);
+    color: var(--purple);
+    border-color: var(--gold);
+    box-shadow: 0 0 24px rgba(201, 168, 76, 0.4);
+  }
+
+  .change-tag {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.7rem;
+    display: inline-block;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid rgba(201, 168, 76, 0.3);
+  }
+
+  .change-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .change-text {
+    font-size: 1.08rem;
+    line-height: 1.75;
+    color: rgba(237, 232, 245, 0.85);
+    margin-bottom: 1rem;
+    max-width: 580px;
+  }
+
+  .change-where {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(201, 168, 76, 0.6);
+    border-top: 1px solid rgba(201, 168, 76, 0.15);
+    padding-top: 0.85rem;
+    margin-top: 1.25rem;
+    display: inline-block;
+    padding-right: 2rem;
+  }
+
+  /* DOCUMENTS SECTION */
+  .docs {
+    background: var(--off-white);
+    padding: 6rem 4rem;
+  }
+  .docs-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .docs-inner .section-rule { margin: 0 auto 2.5rem; }
+  .docs-text {
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    line-height: 1.7;
+  }
+
+  .draft-notice {
+    background: var(--white);
+    border-left: 3px solid var(--gold);
+    padding: 1.5rem 1.8rem;
+    margin: 0 auto 3rem;
+    max-width: 720px;
+    text-align: left;
+  }
+
+  .draft-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+    font-weight: 700;
+  }
+
+  .draft-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    font-style: normal;
+    margin-bottom: 0;
+  }
+  .docs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .doc-card {
+    background: var(--white);
+    border: 1px solid var(--purple-pale);
+    padding: 1.8rem 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.25s;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  .doc-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(61, 26, 110, 0.08);
+  }
+  .doc-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 1rem;
+    color: var(--gold);
+  }
+  .doc-icon svg { width: 100%; height: 100%; fill: currentColor; }
+  .doc-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 0.4rem;
+    line-height: 1.3;
+  }
+  .doc-desc {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    flex: 1;
+  }
+  .doc-link {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 2px;
+    align-self: flex-start;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .doc-card:hover .doc-link {
+    color: var(--purple);
+    border-bottom-color: var(--purple);
+  }
+
+  /* CLOSING */
+  .closing {
+    background: var(--white);
+    padding: 6rem 4rem;
+    text-align: center;
+  }
+  .closing-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .closing-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight: 700;
+    color: var(--purple);
+    line-height: 1.3;
+    margin-bottom: 2rem;
+  }
+  .closing-quote .gold { color: var(--gold); font-style: italic; }
+  .closing-rule {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 0 auto 2rem;
+  }
+  .closing-attribution {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--purple);
+    padding: 2.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(201,168,76,0.2);
+    margin: 0;
+    width: 100%;
+  }
+  .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--gold-light);
+    font-weight: 700;
+  }
+  .footer-slogan {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: rgba(237,232,245,0.5);
+    font-size: 0.95rem;
+  }
+  .footer-school {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(237,232,245,0.4);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; flex-wrap: wrap; }
+    .nav-toggle { display: flex; }
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      gap: 0;
+      width: 100%;
+      padding: 0.5rem 0 1rem;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links li { border-top: 1px solid rgba(201,168,76,0.1); }
+    .nav-links a {
+      display: block;
+      padding: 0.85rem 0;
+      font-size: 0.8rem;
+    }
+    .has-submenu .caret { display: none; }
+    .submenu {
+      position: static;
+      transform: none;
+      background: rgba(0,0,0,0.15);
+      border: none;
+      padding: 0;
+      min-width: 0;
+      opacity: 1;
+      visibility: visible;
+      margin: 0;
+    }
+    .submenu li { border-top: 1px solid rgba(201,168,76,0.06); }
+    .submenu a {
+      padding: 0.7rem 0 0.7rem 1.5rem;
+      font-size: 0.7rem;
+      color: rgba(237, 232, 245, 0.7);
+    }
+
+    .prop-hero { padding: 7rem 1.5rem 4rem; }
+    .prop-hero::after { top: 5rem; left: 1rem; right: 1rem; bottom: 1rem; }
+    .why, .changes, .docs, .closing { padding: 4rem 1.5rem; }
+    .changes-grid { padding-left: 3rem; max-width: 100%; }
+    .changes-grid::before { left: 1rem; }
+    .change-num { left: -3rem; width: 2.2rem; height: 2.2rem; font-size: 0.95rem; }
+    .change-title { font-size: 1.3rem; }
+    .docs-grid { grid-template-columns: 1fr; }
+    footer {
+      flex-direction: column;
+      gap: 0.75rem;
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Dvorkin &amp; Brewer</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
+    <li class="has-submenu">
+      <a href="index.html#about">Candidates <span class="caret">▾</span></a>
+      <ul class="submenu">
+        <li><a href="zach.html">Zach Dvorkin</a></li>
+        <li><a href="rafi.html">Rafael Brewer</a></li>
+      </ul>
+    </li>
+    <li><a href="index.html#platform">Platform</a></li>
+    <li><a href="proposal.html">The Proposal</a></li>
+    <li><a href="index.html#gallery">Gallery</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="prop-hero">
+  <div class="prop-hero-inner">
+    <p class="prop-eyebrow">Our Proposal · Spring 2026</p>
+    <h1 class="prop-title">A Constitution<br>That Actually Works.</h1>
+    <div class="prop-divider"></div>
+    <p class="prop-tagline">"Our platform is a document, not a slogan."</p>
+    <p class="prop-subtitle">A complete rewrite of the Garfield ASB Constitution and Bylaws.</p>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why">
+  <div class="why-inner">
+    <p class="section-label">Why a Rewrite</p>
+    <h2 class="section-title">A government no one is watching.</h2>
+    <div class="section-rule"></div>
+    <p>While Garfield currently has a constitution, it is as well-known as it is followed. And before you ask, you're <em>not</em> the only person who's never heard of it. ASB meetings are private, and student government answers to no one.</p>
+    <p>This proposal is a new constitution built on three commitments: ASB will operate publicly, it will represent every student, and Garfield will have the tools to hold its student government accountable. It has been carefully drafted to comply with Seattle Public Schools legal requirements while reflecting the daily reality at Garfield.</p>
+    <p>In short, it's a constitution we believe in — and one we plan to follow.</p>
+  </div>
+</section>
+
+<!-- CHANGES -->
+<section class="changes">
+  <div class="changes-inner">
+    <div class="changes-header">
+      <p class="section-label">Six Reforms</p>
+      <h2 class="section-title">What Actually Changes</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="changes-grid">
+
+      <div class="change">
+        <div class="change-num">1</div>
+        <span class="change-tag">Accountability</span>
+        <h3 class="change-title">Public meetings, public comment.</h3>
+        <p class="change-text">Currently, ASB operates behind closed doors; our constitution opens them. Every meeting is public, and every meeting reserves time for student comment — with the right to pre-register, submit written testimony, or speak in person.</p>
+        <p class="change-where">Bylaws · Article 1 · Article 2</p>
+      </div>
+
+      <div class="change">
+        <div class="change-num">2</div>
+        <span class="change-tag">Representation</span>
+        <h3 class="change-title">The grades get the votes.</h3>
+        <p class="change-text">Today, anyone in the Leadership Class — elected or not — gets an equal vote on how Garfield's nearly $200,000 of ASB money is spent. Our structure replaces that with seven voting parties, each tied to an actual mandate from the people they represent.</p>
+        <p class="change-where">Constitution · Article IV</p>
+      </div>
+
+      <div class="change">
+        <div class="change-num">3</div>
+        <span class="change-tag">Accountability</span>
+        <h3 class="change-title">The right to recall.</h3>
+        <p class="change-text">Officers who fail to do their job can be removed. A petition from 25% of the student body triggers a recall vote of an ASB officer. A class officer needs only 33% of their class. For the first time, ASB is actually accountable to the students it serves.</p>
+        <p class="change-where">Bylaws · Article 9</p>
+      </div>
+
+      <div class="change">
+        <div class="change-num">4</div>
+        <span class="change-tag">Accountability</span>
+        <h3 class="change-title">A formal way to be heard.</h3>
+        <p class="change-text">Article VI gives every student the right to file a complaint when they're being mistreated by an SPS employee — with retaliation protections, confidentiality, and guaranteed response timelines. Every student deserves to be taken seriously. This guarantees it.</p>
+        <p class="change-where">Constitution · Article VI</p>
+      </div>
+
+      <div class="change">
+        <div class="change-num">5</div>
+        <span class="change-tag">Representation</span>
+        <h3 class="change-title">Amendment by petition.</h3>
+        <p class="change-text">Any student with 5% support can propose changes to the constitution. Substantive amendments must be ratified by the student body, not just by the Leadership Class. And it's not a rule that can be quietly undone next year — Article VIII protects itself, requiring even higher thresholds to change than the rest of the constitution.</p>
+        <p class="change-where">Constitution · Article VIII</p>
+      </div>
+
+      <div class="change">
+        <div class="change-num">6</div>
+        <span class="change-tag">Representation</span>
+        <h3 class="change-title">A seat at the table.</h3>
+        <p class="change-text">Article VII guarantees students full membership on the Building Leadership Team, hiring committees, and other building-level decision-making bodies. They serve as voting members, not observers or advisors, and are selected through a transparent process.</p>
+        <p class="change-where">Constitution · Article VII</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- DOCUMENTS -->
+<section class="docs">
+  <div class="docs-inner">
+    <p class="section-label">Read for Yourself</p>
+    <h2 class="section-title">The Documents</h2>
+    <div class="section-rule"></div>
+    <p class="docs-text">You don't have to take our word for it. Here is the full proposal, the bylaws that operationalize it, and the standing rules that handle the day-to-day. Read every word.</p>
+
+    <div class="draft-notice">
+      <p class="draft-title">Working Drafts</p>
+      <p class="draft-text">These documents are in active development through ratification. Some sections remain unfinished and will be refined with input from students, the current Executive Board, and school administration. We're sharing them now so the work is visible.</p>
+    </div>
+
+    <div class="docs-grid">
+
+      <a class="doc-card" href="documents/Garfield-ASB-Constitution.pdf" target="_blank" rel="noopener">
+        <div class="doc-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
+        </div>
+        <div class="doc-name">The Constitution</div>
+        <p class="doc-desc">The proposed governing document. Defines the structure, authority, and rights that will guide ASB.</p>
+        <span class="doc-link">View Document →</span>
+      </a>
+
+      <a class="doc-card" href="documents/Garfield-ASB-Bylaws.pdf" target="_blank" rel="noopener">
+        <div class="doc-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
+        </div>
+        <div class="doc-name">The Bylaws</div>
+        <p class="doc-desc">Operational rules for elections, meetings, finances, recall, and officer duties. The how, beneath the what.</p>
+        <span class="doc-link">View Document →</span>
+      </a>
+
+      <a class="doc-card" href="documents/Garfield-ASB-Standing-Rules.pdf" target="_blank" rel="noopener">
+        <div class="doc-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
+        </div>
+        <div class="doc-name">The Standing Rules</div>
+        <p class="doc-desc">Annual operating details: activity card pricing, public comment time, campaign rules, and other practical matters.</p>
+        <span class="doc-link">View Document →</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="closing-inner">
+    <p class="closing-quote">We are the only candidates running with <span class="gold">a real plan</span>, not a slogan.</p>
+    <div class="closing-rule"></div>
+    <p class="closing-attribution">Dvorkin &amp; Brewer · 2026–27</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">Dvorkin &amp; Brewer</div>
+  <div class="footer-slogan">"Suited for Garfield."</div>
+  <div class="footer-school">Garfield High School · Seattle, WA</div>
+</footer>
+
+<script>
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => {
+    toggle.classList.toggle('open');
+    links.classList.toggle('open');
+  });
+</script>
+
+</body>
+</html>
